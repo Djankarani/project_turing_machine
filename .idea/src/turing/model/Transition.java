@@ -1,32 +1,63 @@
 package turing.model;
 
-public class Transition {
-    private String nextState;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-    private char writeSymbol;
+public class TuringMachine {
+    private String id;
+    private String startState;
+    private Set<String> states;
+    private Set<String> acceptStates;
+    private Set<String> rejectStates;
 
-    private char moveDirection;
+    private Map<String, Map<Character, Transition>> transitions;
 
-    public Transition(String nextState, char writeSymbol, char moveDirection) {
-        this.nextState = nextState;
-        this.writeSymbol = writeSymbol;
-        this.moveDirection = moveDirection;
+    public TuringMachine(String id) {
+        this.id = id;
+        this.states = new HashSet<>();
+        this.acceptStates = new HashSet<>();
+        this.rejectStates = new HashSet<>();
+        this.transitions = new HashMap<>();
     }
 
-    public String getNextState() {
-        return nextState;
+    public void addState(String state) {
+        states.add(state);
     }
 
-    public char getWriteSymbol() {
-        return writeSymbol;
+    public void setStart(String state) {
+        if (states.contains(state)) {
+            this.startState = state;
+        }
     }
 
-    public char getMoveDirection() {
-        return moveDirection;
+    public void addAccept(String state) {
+        if (states.contains(state)) acceptStates.add(state);
     }
+
+    public void addReject(String state) {
+        if (states.contains(state)) rejectStates.add(state);
+    }
+
+    public void addTransition(String fromState, char readSymbol, Transition trans) {
+        if (!states.contains(fromState) || !states.contains(trans.getNextState())) {
+            return;
+        }
+        if (!transitions.containsKey(fromState)) {
+            transitions.put(fromState, new HashMap<>());
+        }
+        transitions.get(fromState).put(readSymbol, trans);
+    }
+
+    public String getId() { return id; }
+    public String getStartState() { return startState; }
+    public Set<String> getStates() { return states; }
 
     @Override
     public String toString() {
-        return String.format("(%s, %c, %c)", nextState, writeSymbol, moveDirection);
+        return "TM ID: " + id + ", States: " + states.size() + ", Transitions: " + transitions.size();
     }
 }

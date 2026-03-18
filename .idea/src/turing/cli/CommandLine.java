@@ -1,11 +1,14 @@
-package turing.cli;
 
+package turing.cli;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class CommandLine {
     private boolean isRunning = true;
     private boolean isFileOpened = false;
     private String currentFileName = "";
+
+    private Map<String, TuringMachine> loadedMachines = new HashMap<>();
 
     public void start() {
         Scanner scanner = new Scanner(System.in);
