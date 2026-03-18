@@ -1,5 +1,4 @@
 package turing.main;
-
 import turing.cli.CommandLine;
 
 public class Main {
