@@ -21,6 +21,11 @@ public class TuringMachine extends BaseMachine {
         resetExecution();
     }
 
+    private void validateSymbol(char c) {
+        if (c != '_' && !Character.isDigit(c) && !(c >= 'a' && c <= 'z')) {
+            throw new IllegalArgumentException("Invalid alphabet symbol: " + c);
+        }
+    }
 
     public void addState(String state) { states.add(state); }
     public void setStart(String state) { this.startState = state; addState(state); }
@@ -53,6 +58,7 @@ public class TuringMachine extends BaseMachine {
 
     @Override
     public void resetExecution() {
+
         init("");
     }
 
@@ -131,21 +137,41 @@ public class TuringMachine extends BaseMachine {
         }
     }
 
-    public String getFullTapeString() {
+    public String getTapeSegment(int from, int to) {
         if (tape == null || tape.isEmpty()) return "_";
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tape.size(); i++) {
-            if (i == head) sb.append("[").append(tape.get(i)).append("]");
-            else sb.append(tape.get(i));
+        for (int i = from; i <= to; i++) {
+            if (i >= 0 && i < tape.size()) {
+                if (i == head) sb.append("[").append(tape.get(i)).append("]");
+                else sb.append(tape.get(i));
+            } else {
+                if (i == head) sb.append("[_]");
+                else sb.append("_");
+            }
         }
         return sb.toString();
     }
 
+    public String getFullTapeString() {
+        return getTapeSegment(0, tape.size() - 1);
+    }
+
 
     public boolean doesAccept() {
+
         return isHalted && acceptStates.contains(currentState);
     }
 
+    public void printTrace(String word, int k, int maxSteps) {
+        init(word);
+        System.out.println("Initial: " + getFullTapeString() + " (" + getStatus() + ")");
+        int printed = 1;
+        while (!isHalted && printed < k && (maxSteps == -1 || stepsCount < maxSteps)) {
+            step();
+            System.out.println("Step " + stepsCount + ": " + getFullTapeString() + " (" + getStatus() + ")");
+            printed++;
+        }
+    }
 
     private static class Transition implements Serializable {
         String nextState;

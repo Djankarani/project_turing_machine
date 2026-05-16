@@ -2,7 +2,6 @@ package turing.model;
 
 public enum Direction {
     L, R, S;
-
     public static Direction fromString(String s) {
         switch (s.toUpperCase()) {
             case "L": return L;
